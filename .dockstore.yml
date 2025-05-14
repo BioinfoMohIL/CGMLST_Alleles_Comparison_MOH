@@ -1,0 +1,5 @@
+version: 1.2
+workflows:
+ - name: CgMLST_Alleles_comparison_MOH
+   subclass: WDL
+   primaryDescriptorPath: /cgmlst_alleles_comparison.wdl
