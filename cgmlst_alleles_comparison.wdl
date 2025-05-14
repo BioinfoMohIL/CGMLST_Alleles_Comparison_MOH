@@ -34,13 +34,13 @@ task alleles_comparison {
     command <<<
 
         if [ ! -f "~{assemblies}" ]; then
-            echo "[ERROR] ❌ File '~{assemblies}' not found."
+            echo "[ERROR] File '~{assemblies}' not found."
             exit 1
         fi
 
         filename="~{assemblies}"
         if [[ ! "$filename" == *.tar.gz && ! "$filename" == *.gz && ! "$filename" == *.zip ]]; then
-            echo "❌ Error: Unsupported file type: $filename"
+            echo "Error: Unsupported file type: $filename"
             exit 1
         fi
     
@@ -48,7 +48,12 @@ task alleles_comparison {
 
         mkdir results
          
-        cgmlst_alleles_comparison --i ~{assemblies} --o results --sample_prefix ${sample_prefix} --results_file results_alleles.tsv --loci_presence_file results/loci_presence.tsv --results_stats results/stats_summary.tsv
+        cgmlst_alleles_comparison \
+            --i ~{assemblies} --o results \
+            --sample_prefix ${sample_prefix} \
+            --results_file results_alleles.tsv \
+            --loci_presence_file results/loci_presence.tsv ]
+            --results_stats results/stats_summary.tsv
     >>>
 
     output {
