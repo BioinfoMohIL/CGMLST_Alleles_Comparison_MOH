@@ -43,11 +43,12 @@ task alleles_comparison {
             echo "❌ Error: Unsupported file type: $filename"
             exit 1
         fi
-        
+    
+        sample_prefix=$(echo ~{sample_prefix} | tr '[:upper:]' '[:lower:]')
 
         mkdir results
          
-        cgmlst_alleles_comparison --i ~{assemblies} --o results --sample_prefix ~{sample_prefix} --results_file results_alleles.tsv --loci_presence_file results/loci_presence.tsv --results_stats results/stats_summary.tsv
+        cgmlst_alleles_comparison --i ~{assemblies} --o results --sample_prefix ${sample_prefix} --results_file results_alleles.tsv --loci_presence_file results/loci_presence.tsv --results_stats results/stats_summary.tsv
     >>>
 
     output {
