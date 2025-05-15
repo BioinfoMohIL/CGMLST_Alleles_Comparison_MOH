@@ -18,15 +18,21 @@ workflow cgmlst_alleles_comparison {
 
     call extract_summary_files {
         input:
-            call_outputs = alleles_comparison.call_outputs,
             visualization_outputs = alleles_comparison.visualization_outputs
-            
-    }
 
+    }
+    
+    call generate_mst {
+        input:
+            alleles_matrix = extract_summary_files.visualization_alleles_matrix,
+            docker = docker
+                
+    }
+    
     output {
-        File? visualization_file = extract_summary_files.visualization_tsv
-        File? alleles_matrix     = extract_summary_files.alleles_matrix
-        File? results_alleles    = extract_summary_files.results_alleles
+        File cg_visualization_file = extract_summary_files.visualization_alleles_matrix
+        File cg_presence_absence   = extract_summary_files.presence_absence
+        File cg_mst                = generate_mst.mst
     }
 }
 
@@ -65,7 +71,6 @@ task alleles_comparison {
     >>>
 
     output {
-        Array[File] call_outputs = glob("results/call/*")
         Array[File] visualization_outputs = glob("results/visualization/*")
     }
 
@@ -76,11 +81,9 @@ task alleles_comparison {
     }
 }
 
-# I want to fetch specific files from the chewBBaca outputs
 task extract_summary_files {
   input {
     Array[File] visualization_outputs
-    Array[File] call_outputs
   }
 
   command <<<
@@ -89,28 +92,40 @@ task extract_summary_files {
     for file in ~{sep=' ' visualization_outputs}; do
       fname=$(basename "$file")
       if [[ "$fname" == "cgMLST.tsv" ]]; then
-        cp "$file" extracted/visualization.tsv
+        cp "$file" extracted/visualization_alleles_matrix.tsv
       elif [[ "$fname" == "Presence_Absence.tsv" ]]; then
-        cp "$file" extracted/alleles_matrix.tsv
+        cp "$file" extracted/presence_absence.tsv
       fi
     done
 
-    for file in ~{sep=' ' call_outputs}; do
-      fname=$(basename "$file")
-      if [[ "$fname" == "results_alleles.tsv" ]]; then
-        cp "$file" extracted/results_alleles.tsv
-      fi
-    done
   >>>
 
   output {
-    File? visualization_tsv = "extracted/visualization.tsv"
-    File? alleles_matrix = "extracted/alleles_matrix.tsv"
-    File? results_alleles = "extracted/results_alleles.tsv"
+    File visualization_alleles_matrix = "extracted/visualization_alleles_matrix.tsv"
+    File presence_absence    = "extracted/presence_absence.tsv"
   }
 
   runtime {
     docker: "ubuntu:25.04"
   }
+}
+
+task generate_mst {
+    input {
+        File alleles_matrix
+        String docker
+    }
+
+    command <<<
+        generate_mst --i ~{alleles_matrix} --o mst.png
+    >>>
+
+    output {
+        File mst = 'mst.png'
+    }
+
+    runtime {
+        docker: docker
+    }
 }
 
