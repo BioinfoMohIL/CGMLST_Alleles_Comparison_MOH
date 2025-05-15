@@ -1,4 +1,4 @@
-version 1.0
+version development
 
 workflow cgmlst_alleles_comparison {
     input {
