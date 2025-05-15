@@ -57,7 +57,7 @@ task alleles_comparison {
             exit 1
         fi
     
-        sample_prefix=$(echo ~{sample_prefix} | tr '[:upper:]' '[:lower:]')
+        sample_prefix=$(echo ${sample_prefix} | tr '[:upper:]' '[:lower:]')
 
         mkdir results
          
