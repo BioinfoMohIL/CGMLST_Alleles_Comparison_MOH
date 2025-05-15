@@ -57,14 +57,14 @@ task alleles_comparison {
             exit 1
         fi
     
-        sample_prefix=$(echo ${sample_prefix} | tr '[:upper:]' '[:lower:]')
+        sample_prefix_lower=$(echo ~{sample_prefix} | tr '[:upper:]' '[:lower:]')
 
         mkdir results
          
         cgmlst_alleles_comparison \
             --i ~{assemblies} \
             --o results \
-            --sample_prefix ~{sample_prefix} \
+            --sample_prefix ${sample_prefix_lower} \
             --call_dir results/call \
             --visualization_dir results/visualization
      
