@@ -72,6 +72,7 @@ task alleles_comparison {
 
     runtime {
         docker: docker
+        cpu: 20
     }
 }
 
