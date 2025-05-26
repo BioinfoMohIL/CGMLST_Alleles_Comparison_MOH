@@ -8,7 +8,7 @@
 
 ## 🧩 Overview
 
-This WDL workflow performs **cgMLST alleles comparison** across a set of genome assemblies and produces:
+This WDL workflow performs **cgMLST alleles comparison** (via ChewBBaca in the docker container) across a set of genome assemblies and produces:
 - A **cgMLST allele matrix**
 - A **presence/absence matrix**
 - A **minimum spanning tree (MST)** for visualization
@@ -20,7 +20,7 @@ This WDL workflow performs **cgMLST alleles comparison** across a set of genome 
 | Name             | Type         | Description                                               |
 |------------------|--------------|-----------------------------------------------------------|
 | `assemblies`     | `Array[File]`| List of genome assembly files (`.fasta`)                 |
-| `sample_prefix`  | `String`     | Prefix used for naming samples in output                 |
+| `sample_prefix`  | `String`     | Sample prefix ("nm", "bp", "ec"...)                 |
 | `docker`         | `String`     | Docker image to use (default: `bioinfomoh/cgmlst_alleles_comparison:1`) |
 
 ---
