@@ -1,8 +1,8 @@
-version development
+version 1.0
 
 workflow cgmlst_alleles_comparison {
     input {
-        File assemblies
+        Array[File] assemblies
         String docker = 'bioinfomoh/cgmlst_alleles_comparison:1'
         String sample_prefix
     }
@@ -39,30 +39,24 @@ workflow cgmlst_alleles_comparison {
 
 task alleles_comparison {
     input {
-        File assemblies
+        Array[File] assemblies
         String sample_prefix
         String docker
     }
 
     command <<<
 
-        if [ ! -f "~{assemblies}" ]; then
-            echo "[ERROR] File '~{assemblies}' not found."
-            exit 1
-        fi
-
-        filename="~{assemblies}"
-        if [[ ! "$filename" == *.tar.gz && ! "$filename" == *.gz && ! "$filename" == *.zip ]]; then
-            echo "Error: Unsupported file type: $filename"
-            exit 1
-        fi
+        mkdir -p assemblies_dir
+        for f in ~{sep=' ' assemblies}; do
+            cp "$f" assemblies_dir/
+        done
     
         sample_prefix_lower=$(echo ~{sample_prefix} | tr '[:upper:]' '[:lower:]')
 
         mkdir results
          
         cgmlst_alleles_comparison \
-            --i ~{assemblies} \
+            --i assemblies_dir \
             --o results \
             --sample_prefix ${sample_prefix_lower} \
             --call_dir results/call \
